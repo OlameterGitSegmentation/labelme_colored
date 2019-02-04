@@ -1,6 +1,7 @@
 from math import sqrt
 import os.path as osp
-
+from .ustr import ustr
+import hashlib
 import numpy as np
 
 from qtpy import QtCore
@@ -9,6 +10,15 @@ from qtpy import QtWidgets
 
 
 here = osp.dirname(osp.abspath(__file__))
+
+
+def generateColorByText(text):
+    s = ustr(text)
+    hashCode = int(hashlib.sha256(s.encode('utf-8')).hexdigest(), 16)
+    r = int((hashCode / 255) % 255)
+    g = int((hashCode / 65025)  % 255)
+    b = int((hashCode / 16581375)  % 255)
+    return QtGui.QColor(r, g, b, 100)
 
 
 def newIcon(icon):

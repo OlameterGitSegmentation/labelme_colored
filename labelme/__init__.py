@@ -6,7 +6,7 @@ import sys
 from qtpy import QT_VERSION
 
 
-__appname__ = 'labelme'
+__appname__ = 'labelme - Maintenant en couleur!'
 
 QT5 = QT_VERSION[0] == '5'
 del QT_VERSION

@@ -639,9 +639,13 @@ class Canvas(QtWidgets.QWidget):
         elif key == QtCore.Qt.Key_Return and self.canCloseShape():
             self.finalise()
 
-    def setLastLabel(self, text):
+    def setLastLabel(self, text, line_color  = None, fill_color = None):
         assert text
         self.shapes[-1].label = text
+        if line_color:
+            self.shapes[-1].line_color = line_color
+        if fill_color:
+            self.shapes[-1].fill_color = fill_color
         self.shapesBackups.pop()
         self.storeShapes()
         return self.shapes[-1]

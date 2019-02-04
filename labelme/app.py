@@ -28,6 +28,7 @@ from labelme.utils import fmtShortcut
 from labelme.utils import newAction
 from labelme.utils import newIcon
 from labelme.utils import struct
+from labelme.utils import generateColorByText
 from labelme.widgets import Canvas
 from labelme.widgets import ColorDialog
 from labelme.widgets import EscapableQListWidget
@@ -825,6 +826,7 @@ class MainWindow(QtWidgets.QMainWindow, WindowMixin):
                               .format(text, self._config['validate_label']))
             return
         item.setText(text)
+        item.setBackground(generateColorByText(text))
         self.setDirty()
         if not self.uniqLabelList.findItems(text, Qt.MatchExactly):
             self.uniqLabelList.addItem(text)
@@ -873,6 +875,7 @@ class MainWindow(QtWidgets.QMainWindow, WindowMixin):
         item = QtWidgets.QListWidgetItem(shape.label)
         item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
         item.setCheckState(Qt.Checked)
+        item.setBackground(generateColorByText(shape.label))
         self.labelList.itemsToShapes.append((item, shape))
         self.labelList.addItem(item)
         if not self.uniqLabelList.findItems(shape.label, Qt.MatchExactly):
@@ -901,8 +904,12 @@ class MainWindow(QtWidgets.QMainWindow, WindowMixin):
             s.append(shape)
             if line_color:
                 shape.line_color = QtGui.QColor(*line_color)
+            else:
+                shape.line_color = generateColorByText(label)
             if fill_color:
                 shape.fill_color = QtGui.QColor(*fill_color)
+            else:
+                shape.fill_color = generateColorByText(label)
         self.loadShapes(s)
 
     def loadFlags(self, flags):
@@ -984,6 +991,7 @@ class MainWindow(QtWidgets.QMainWindow, WindowMixin):
         label = str(item.text())
         if label != shape.label:
             shape.label = str(item.text())
+            shape.line_color = generateColorByText(shape.label)
             self.setDirty()
         else:  # User probably changed item visibility
             self.canvas.setShapeVisible(shape, item.checkState() == Qt.Checked)
@@ -1010,7 +1018,8 @@ class MainWindow(QtWidgets.QMainWindow, WindowMixin):
             self.canvas.undoLastLine()
             self.canvas.shapesBackups.pop()
         else:
-            self.addLabel(self.canvas.setLastLabel(text))
+            generate_color = generateColorByText(text)
+            self.addLabel(self.canvas.setLastLabel(text, generate_color, generate_color))
             self.actions.editMode.setEnabled(True)
             self.actions.undoLastPoint.setEnabled(False)
             self.actions.undo.setEnabled(True)
